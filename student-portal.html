@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCY0ihIXgCvOcfb2TjMlUM_CAU8z-M-Otg",
+      authDomain: "final-test-95cba.firebaseapp.com",
+      projectId: "final-test-95cba",
+      storageBucket: "final-test-95cba.appspot.com",
+      messagingSenderId: "425187589579",
+      appId: "1:425187589579:web:fd55b7d5b9756f3297ca4e",
+      measurementId: "G-KHBNZXET0P"
+    };
+  
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+  
+
+</head>
+<body>
+  <h1>Welcome to the Student Portal</h1>
+  <nav>
+    <ul>
+      <li><a href="result.html">Results</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a id="logoutBtn">Logout</a></li>
+    </ul>
+  </nav>
+
+  <footer>
+    <p>&copy; 2024 SMIT. All rights reserved.</p>
+  </footer>
+
+  <script src="../js/script.js"></script>
+
+
+  <script>
+    // Logout function
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.signOut().then(() => {
+        alert('You have logged out');
+        window.location.href = '../index.html';  // Redirect to home page
+      });
+    });
+  </script>
+</body>
+</html>

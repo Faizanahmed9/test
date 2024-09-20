@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Student Marks</title>
+  <link rel="stylesheet" href="../css/styles.css">
+
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCY0ihIXgCvOcfb2TjMlUM_CAU8z-M-Otg",
+      authDomain: "final-test-95cba.firebaseapp.com",
+      projectId: "final-test-95cba",
+      storageBucket: "final-test-95cba.appspot.com",
+      messagingSenderId: "425187589579",
+      appId: "1:425187589579:web:fd55b7d5b9756f3297ca4e",
+      measurementId: "G-KHBNZXET0P"
+    };
+  
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+  
+</head>
+<body>
+  <h1>Upload Student Marks</h1>
+  <form id="uploadMarksForm">
+    <input type="text" id="course" placeholder="Course" required>
+    <input type="text" id="studentId" placeholder="Student ID" required>
+    <input type="number" id="marks" placeholder="Marks Obtained" required>
+    <input type="number" id="totalMarks" placeholder="Total Marks" required>
+    <input type="text" id="grade" placeholder="Grade" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <footer>
+    <p>&copy; 2024 SMIT. All rights reserved.</p>
+  </footer>
+
+  <script src="../js/script.js"></script>
+
+
+  <script>
+    const uploadMarksForm = document.getElementById('uploadMarksForm');
+
+    uploadMarksForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const course = document.getElementById('course').value;
+      const studentId = document.getElementById('studentId').value;
+      const marks = document.getElementById('marks').value;
+      const totalMarks = document.getElementById('totalMarks').value;
+      const grade = document.getElementById('grade').value;
+
+      // Find the student using their student ID in Firestore
+      db.collection('students').where('studentId', '==', studentId).get()
+        .then(snapshot => {
+          if (!snapshot.empty) {
+            snapshot.forEach(doc => {
+              const studentUid = doc.id;  // Get the student's UID from Firestore
+
+              // Add marks to the student's Firestore document
+              db.collection('students').doc(studentUid).collection('results').add({
+                course,
+                marks,
+                totalMarks,
+                grade
+              })
+              .then(() => {
+                alert('Marks uploaded successfully!');
+              });
+            });
+          } else {
+            alert('Student not found');
+          }
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    });
+  </script>
+</body>
+</html>

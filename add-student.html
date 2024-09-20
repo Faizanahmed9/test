@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Student</title>
+  <link rel="stylesheet" href="../css/styles.css">
+
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCY0ihIXgCvOcfb2TjMlUM_CAU8z-M-Otg",
+      authDomain: "final-test-95cba.firebaseapp.com",
+      projectId: "final-test-95cba",
+      storageBucket: "final-test-95cba.appspot.com",
+      messagingSenderId: "425187589579",
+      appId: "1:425187589579:web:fd55b7d5b9756f3297ca4e",
+      measurementId: "G-KHBNZXET0P"
+    };
+  
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+</script>
+
+
+
+</head>
+<body>
+  <h1>Add Student</h1>
+  <form id="addStudentForm">
+    <input type="text" id="firstName" placeholder="First Name" required>
+    <input type="text" id="lastName" placeholder="Last Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <input type="text" id="cnic" placeholder="CNIC" required>
+    <input type="text" id="studentId" placeholder="Student ID" required>
+    <input type="hidden" value="Student" id="userType">
+    <button type="submit">Submit</button>
+  </form>
+
+  <footer>
+    <p>&copy; 2024 SMIT. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const addStudentForm = document.getElementById('addStudentForm');
+    addStudentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const cnic = document.getElementById('cnic').value;
+      const studentId = document.getElementById('studentId').value;
+      const userType = document.getElementById('userType').value;
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const user = userCredential.user;
+          db.collection('students').doc(user.uid).set({
+            firstName,
+            lastName,
+            email,
+            cnic,
+            studentId,
+            userType
+          });
+          alert('Student added successfully!');
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    });
+  </script>
+</body>
+</html>

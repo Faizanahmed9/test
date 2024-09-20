@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Result</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCY0ihIXgCvOcfb2TjMlUM_CAU8z-M-Otg",
+      authDomain: "final-test-95cba.firebaseapp.com",
+      projectId: "final-test-95cba",
+      storageBucket: "final-test-95cba.appspot.com",
+      messagingSenderId: "425187589579",
+      appId: "1:425187589579:web:fd55b7d5b9756f3297ca4e",
+      measurementId: "G-KHBNZXET0P"
+    };
+  
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+  
+
+</head>
+<body>
+  <h1>Check Your Result</h1>
+  <form id="resultForm">
+    <input type="text" id="cnic" placeholder="Enter CNIC" required>
+    <button type="submit">Search</button>
+  </form>
+  
+  <table id="resultTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Student ID</th>
+        <th>Email</th>
+        <th>CNIC</th>
+        <th>Course</th>
+        <th>Marks</th>
+        <th>Total Marks</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data will be populated here -->
+    </tbody>
+  </table>
+
+  <footer>
+    <p>&copy; 2024 SMIT. All rights reserved.</p>
+  </footer>
+
+  <script src="../js/script.js"></script>
+
+
+  <script>
+    const resultForm = document.getElementById('resultForm');
+    const resultTableBody = document.querySelector('#resultTable tbody');
+
+    resultForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const cnic = document.getElementById('cnic').value;
+
+      // Fetch student by CNIC
+      db.collection('students').where('cnic', '==', cnic).get()
+        .then(snapshot => {
+          if (!snapshot.empty) {
+            snapshot.forEach(doc => {
+              const student = doc.data();
+              const studentUid = doc.id;
+
+              // Fetch student's result from Firestore
+              db.collection('students').doc(studentUid).collection('results').get()
+                .then(resultsSnapshot => {
+                  resultsSnapshot.forEach(resultDoc => {
+                    const result = resultDoc.data();
+
+                    // Create a table row with student details and result
+                    const row = `
+                      <tr>
+                        <td>${student.firstName} ${student.lastName}</td>
+                        <td>${student.studentId}</td>
+                        <td>${student.email}</td>
+                        <td>${student.cnic}</td>
+                        <td>${result.course}</td>
+                        <td>${result.marks}</td>
+                        <td>${result.totalMarks}</td>
+                        <td>${result.grade}</td>
+                      </tr>
+                    `;
+                    resultTableBody.innerHTML += row;
+                  });
+                });
+            });
+          } else {
+            alert('No student found with this CNIC');
+          }
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    });
+  </script>
+</body>
+</html>
